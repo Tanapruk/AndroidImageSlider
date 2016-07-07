@@ -7,15 +7,17 @@ task wrapper(type: Wrapper) {
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.2'
-        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.10.+'
+        classpath 'com.android.tools.build:gradle:2.1.0'
+//        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.10.1'
     }
 }
 
 allprojects {
     repositories {
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
