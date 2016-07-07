@@ -411,7 +411,7 @@ public class SliderLayout extends RelativeLayout{
 
         private final String name;
 
-        private Transformer(String s){
+        Transformer(String s){
             name = s;
         }
         public String toString(){
@@ -419,9 +419,9 @@ public class SliderLayout extends RelativeLayout{
         }
 
         public boolean equals(String other){
-            return (other == null)? false:name.equals(other);
+            return other != null && name.equals(other);
         }
-    };
+    }
 
     /**
      * set a preset viewpager transformer by id.
@@ -566,7 +566,7 @@ public class SliderLayout extends RelativeLayout{
 
         private final String name;
         private final int id;
-        private PresetIndicators(String name,int id){
+        PresetIndicators(String name, int id){
             this.name = name;
             this.id = id;
         }
