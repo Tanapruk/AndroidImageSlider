@@ -3,7 +3,7 @@ package com.daimajia.slider.demo;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,7 +24,7 @@ import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import java.util.HashMap;
 
 
-public class MainActivity extends ActionBarActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener{
+public class MainActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener, ViewPagerEx.OnPageChangeListener{
 
     private SliderLayout mDemoSlider;
 
