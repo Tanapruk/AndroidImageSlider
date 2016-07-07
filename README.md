@@ -8,7 +8,7 @@ This is a forked project from
 ![](http://ww3.sinaimg.cn/mw690/610dc034jw1egzor66ojdg20950fknpe.gif)
 
 
-### Modification Made
+### Modification
 
 * Replace Picasso with Glide
 * Remove [nineoldandroids](https://github.com/JakeWharton/NineOldAndroids)
@@ -19,5 +19,5 @@ This is a forked project from
 ### No Gradle dependencies as of now.
 You need to download and compile project yourselves.
 
-### Other Documentations please refer to the offical github.
+### Other documentations please refer to the offical github.
 [daimajia/AndroidImageSlider](https://github.com/daimajia/AndroidImageSlider)
