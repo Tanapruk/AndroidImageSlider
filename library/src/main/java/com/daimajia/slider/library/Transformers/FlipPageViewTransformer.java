@@ -2,7 +2,6 @@ package com.daimajia.slider.library.Transformers;
 
 import android.os.Build;
 import android.view.View;
-
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 
 public class FlipPageViewTransformer extends BaseTransformer {
@@ -20,11 +19,7 @@ public class FlipPageViewTransformer extends BaseTransformer {
     }
 
     private void setVisibility(View page, float position) {
-        if (position < 0.5 && position > -0.5) {
-            page.setVisibility(View.VISIBLE);
-        } else {
-            page.setVisibility(View.INVISIBLE);
-        }
+        page.setVisibility(position < 0.5 && position > -0.5 ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void setTranslation(View view) {
@@ -39,10 +34,6 @@ public class FlipPageViewTransformer extends BaseTransformer {
     }
 
     private void setRotation(View view, float position, float percentage) {
-        if (position > 0) {
-            view.setRotationY(-180 * (percentage + 1));
-        } else {
-            view.setRotationY(180 * (percentage + 1));
-        }
+        view.setRotationY(position > 0 ? -180 * (percentage + 1) : 180 * (percentage + 1));
     }
 }
