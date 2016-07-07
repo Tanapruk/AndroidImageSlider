@@ -1,14 +1,18 @@
 package com.daimajia.slider.library.SliderTypes;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.DrawableTypeRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.daimajia.slider.library.R;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 
 import java.io.File;
 
@@ -47,15 +51,15 @@ public abstract class BaseSliderView {
 
     private String mDescription;
 
-    private Picasso mPicasso;
+    private RequestManager mGlideRequestManager;
 
     /**
      * Scale type of the image.
      */
     private ScaleType mScaleType = ScaleType.Fit;
 
-    public enum ScaleType{
-        CenterCrop, CenterInside, Fit, FitCenterCrop
+    public enum ScaleType {
+        CenterCrop, Fit
     }
 
     protected BaseSliderView(Context context) {
@@ -64,51 +68,56 @@ public abstract class BaseSliderView {
 
     /**
      * the placeholder image when loading image from url or file.
+     *
      * @param resId Image resource id
      * @return
      */
-    public BaseSliderView empty(int resId){
+    public BaseSliderView empty(int resId) {
         mEmptyPlaceHolderRes = resId;
         return this;
     }
 
     /**
      * determine whether remove the image which failed to download or load from file
+     *
      * @param disappear
      * @return
      */
-    public BaseSliderView errorDisappear(boolean disappear){
+    public BaseSliderView errorDisappear(boolean disappear) {
         mErrorDisappear = disappear;
         return this;
     }
 
     /**
      * if you set errorDisappear false, this will set a error placeholder image.
+     *
      * @param resId image resource id
      * @return
      */
-    public BaseSliderView error(int resId){
+    public BaseSliderView error(int resId) {
         mErrorPlaceHolderRes = resId;
         return this;
     }
 
     /**
      * the description of a slider image.
+     *
      * @param description
      * @return
      */
-    public BaseSliderView description(String description){
+    public BaseSliderView description(String description) {
         mDescription = description;
         return this;
     }
 
     /**
      * set a url as a image that preparing to load
+     *
      * @param url
      * @return
      */
-    public BaseSliderView image(String url){
-        if(mFile != null || mRes != 0){
+    public BaseSliderView image(String url) {
+        if (mFile != null || mRes != 0) {
             throw new IllegalStateException("Call multi image function," +
                     "you only have permission to call it once");
         }
@@ -118,11 +127,12 @@ public abstract class BaseSliderView {
 
     /**
      * set a file as a image that will to load
+     *
      * @param file
      * @return
      */
-    public BaseSliderView image(File file){
-        if(mUrl != null || mRes != 0){
+    public BaseSliderView image(File file) {
+        if (mUrl != null || mRes != 0) {
             throw new IllegalStateException("Call multi image function," +
                     "you only have permission to call it once");
         }
@@ -130,8 +140,8 @@ public abstract class BaseSliderView {
         return this;
     }
 
-    public BaseSliderView image(int res){
-        if(mUrl != null || mFile != null){
+    public BaseSliderView image(int res) {
+        if (mUrl != null || mFile != null) {
             throw new IllegalStateException("Call multi image function," +
                     "you only have permission to call it once");
         }
@@ -141,62 +151,65 @@ public abstract class BaseSliderView {
 
     /**
      * lets users add a bundle of additional information
+     *
      * @param bundle
      * @return
      */
-    public BaseSliderView bundle(Bundle bundle){
+    public BaseSliderView bundle(Bundle bundle) {
         mBundle = bundle;
         return this;
     }
 
-    public String getUrl(){
+    public String getUrl() {
         return mUrl;
     }
 
-    public boolean isErrorDisappear(){
+    public boolean isErrorDisappear() {
         return mErrorDisappear;
     }
 
-    public int getEmpty(){
+    public int getEmpty() {
         return mEmptyPlaceHolderRes;
     }
 
-    public int getError(){
+    public int getError() {
         return mErrorPlaceHolderRes;
     }
 
-    public String getDescription(){
+    public String getDescription() {
         return mDescription;
     }
 
-    public Context getContext(){
+    public Context getContext() {
         return mContext;
     }
 
     /**
      * set a slider image click listener
+     *
      * @param l
      * @return
      */
-    public BaseSliderView setOnSliderClickListener(OnSliderClickListener l){
+    public BaseSliderView setOnSliderClickListener(OnSliderClickListener l) {
         mOnSliderClickListener = l;
         return this;
     }
 
     /**
      * When you want to implement your own slider view, please call this method in the end in `getView()` method
-     * @param v the whole view
+     *
+     * @param v               the whole view
      * @param targetImageView where to place image
      */
-    protected void bindEventAndShow(final View v, ImageView targetImageView){
+    protected void bindEventAndShow(final View v, ImageView targetImageView) {
         final BaseSliderView me = this;
 
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            if(mOnSliderClickListener != null){
-                mOnSliderClickListener.onSliderClick(me);
-            }
+                if (mOnSliderClickListener != null) {
+                    mOnSliderClickListener.onSliderClick(me);
+                }
             }
         });
 
@@ -206,86 +219,90 @@ public abstract class BaseSliderView {
         if (mLoadListener != null) {
             mLoadListener.onStart(me);
         }
+        RequestManager glideRequestManager = (mGlideRequestManager != null) ? mGlideRequestManager : Glide.with(mContext);
+        DrawableTypeRequest rq;
 
-        Picasso p = (mPicasso != null) ? mPicasso : Picasso.with(mContext);
-        RequestCreator rq = null;
-        if(mUrl!=null){
-            rq = p.load(mUrl);
-        }else if(mFile != null){
-            rq = p.load(mFile);
-        }else if(mRes != 0){
-            rq = p.load(mRes);
-        }else{
+        if (mUrl != null) {
+            rq = glideRequestManager.load(mUrl);
+        } else if (mFile != null) {
+            rq = glideRequestManager.load(mFile);
+        } else if (mRes != 0) {
+            rq = glideRequestManager.load(mRes);
+        } else {
             return;
         }
 
-        if(rq == null){
+        if (rq == null) {
             return;
         }
 
-        if(getEmpty() != 0){
+        if (getEmpty() != 0) {
             rq.placeholder(getEmpty());
         }
 
-        if(getError() != 0){
+        if (getError() != 0) {
             rq.error(getError());
         }
 
-        switch (mScaleType){
+        switch (mScaleType) {
             case Fit:
-                rq.fit();
+                rq.fitCenter();
                 break;
             case CenterCrop:
-                rq.fit().centerCrop();
-                break;
-            case CenterInside:
-                rq.fit().centerInside();
+                rq.centerCrop();
                 break;
         }
 
-        rq.into(targetImageView,new Callback() {
+        rq.into(new GlideDrawableImageViewTarget(targetImageView) {
             @Override
-            public void onSuccess() {
-                if(v.findViewById(R.id.loading_bar) != null){
-                    v.findViewById(R.id.loading_bar).setVisibility(View.INVISIBLE);
+            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                super.onResourceReady(resource, animation);
+                View loadingBar = v.findViewById(R.id.loading_bar);
+                if (loadingBar == null) {
+                    return;
                 }
+                loadingBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
-            public void onError() {
-                if(mLoadListener != null){
-                    mLoadListener.onEnd(false,me);
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                if (mLoadListener != null) {
+                    mLoadListener.onEnd(false, me);
                 }
-                if(v.findViewById(R.id.loading_bar) != null){
-                    v.findViewById(R.id.loading_bar).setVisibility(View.INVISIBLE);
+                View loadingBar = v.findViewById(R.id.loading_bar);
+                if (loadingBar == null) {
+                    return;
                 }
+                loadingBar.setVisibility(View.INVISIBLE);
             }
         });
-   }
+    }
 
 
-
-    public BaseSliderView setScaleType(ScaleType type){
+    public BaseSliderView setScaleType(ScaleType type) {
         mScaleType = type;
         return this;
     }
 
-    public ScaleType getScaleType(){
+    public ScaleType getScaleType() {
         return mScaleType;
     }
 
     /**
      * the extended class have to implement getView(), which is called by the adapter,
      * every extended class response to render their own view.
+     *
      * @return
      */
     public abstract View getView();
 
     /**
      * set a listener to get a message , if load error.
+     *
      * @param l
      */
-    public void setOnImageLoadListener(ImageLoadListener l){
+    public void setOnImageLoadListener(ImageLoadListener l) {
         mLoadListener = l;
     }
 
@@ -295,34 +312,37 @@ public abstract class BaseSliderView {
 
     /**
      * when you have some extra information, please put it in this bundle.
+     *
      * @return
      */
-    public Bundle getBundle(){
+    public Bundle getBundle() {
         return mBundle;
     }
 
-    public interface ImageLoadListener{
+    public interface ImageLoadListener {
         public void onStart(BaseSliderView target);
-        public void onEnd(boolean result,BaseSliderView target);
+
+        public void onEnd(boolean result, BaseSliderView target);
     }
 
     /**
-     * Get the last instance set via setPicasso(), or null if no user provided instance was set
+     * Get the last instance set via setGlideRequestManager, or null if no user provided instance was set
      *
-     * @return The current user-provided Picasso instance, or null if none
+     * @return The current user-provided GlideRequestManager instance, or null if none
      */
-    public Picasso getPicasso() {
-        return mPicasso;
+
+    public RequestManager getGlideRequestManager() {
+        return mGlideRequestManager;
     }
 
     /**
-     * Provide a Picasso instance to use when loading pictures, this is useful if you have a
+     * Provide a Glide instance to use when loading pictures, this is useful if you have a
      * particular HTTP cache you would like to share.
      *
-     * @param picasso The Picasso instance to use, may be null to let the system use the default
+     * @param requestManager The Glide instance to use, may be null to let the system use the default
      *                instance
      */
-    public void setPicasso(Picasso picasso) {
-        mPicasso = picasso;
+    public void setGlideRequestManager(RequestManager requestManager) {
+        mGlideRequestManager = requestManager;
     }
 }
