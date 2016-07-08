@@ -17,5 +17,5 @@ This is a forked project from
 ### No Gradle dependencies
 You need to download and compile project yourselves
 
-### For other documentations, refer to the offical github
+### For other documentations, refer to the offical repo
 [daimajia/AndroidImageSlider](https://github.com/daimajia/AndroidImageSlider)
