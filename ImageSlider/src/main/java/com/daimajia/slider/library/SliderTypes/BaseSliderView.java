@@ -49,6 +49,7 @@ public abstract class BaseSliderView {
 
     private ImageLoadListener mLoadListener;
 
+    private ImageLoadResultListener mLoadResultListener;
     private String mDescription;
 
     private RequestManager mGlideRequestManager;
@@ -262,6 +263,9 @@ public abstract class BaseSliderView {
                     return;
                 }
                 loadingBar.setVisibility(View.INVISIBLE);
+                if (mLoadResultListener != null) {
+                    mLoadResultListener.onSuccess(BaseSliderView.this);
+                }
             }
 
             @Override
@@ -275,6 +279,9 @@ public abstract class BaseSliderView {
                     return;
                 }
                 loadingBar.setVisibility(View.INVISIBLE);
+                if (mLoadResultListener != null) {
+                    mLoadResultListener.onFailure();
+                }
             }
         });
     }
@@ -306,6 +313,14 @@ public abstract class BaseSliderView {
         mLoadListener = l;
     }
 
+    /**
+     * incase you want to check it to do something else.
+     * @param l
+     */
+    public void setOnImageLoadResultListener(ImageLoadResultListener l) {
+        this.mLoadResultListener = l;
+    }
+
     public interface OnSliderClickListener {
         void onSliderClick(BaseSliderView slider);
     }
@@ -323,6 +338,11 @@ public abstract class BaseSliderView {
         void onStart(BaseSliderView target);
 
         void onEnd(boolean result, BaseSliderView target);
+    }
+    public interface ImageLoadResultListener {
+        void onSuccess(BaseSliderView target);
+
+        void onFailure();
     }
 
     /**
