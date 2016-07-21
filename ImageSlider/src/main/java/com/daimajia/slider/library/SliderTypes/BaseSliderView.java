@@ -264,7 +264,7 @@ public abstract class BaseSliderView {
                 }
                 loadingBar.setVisibility(View.INVISIBLE);
                 if (mLoadResultListener != null) {
-                    mLoadResultListener.onSuccess(BaseSliderView.this);
+                    mLoadResultListener.onImageSliderSuccess(BaseSliderView.this);
                 }
             }
 
@@ -280,7 +280,7 @@ public abstract class BaseSliderView {
                 }
                 loadingBar.setVisibility(View.INVISIBLE);
                 if (mLoadResultListener != null) {
-                    mLoadResultListener.onFailure();
+                    mLoadResultListener.onImageSliderFailure();
                 }
             }
         });
@@ -340,9 +340,9 @@ public abstract class BaseSliderView {
         void onEnd(boolean result, BaseSliderView target);
     }
     public interface ImageLoadResultListener {
-        void onSuccess(BaseSliderView target);
+        void onImageSliderSuccess(BaseSliderView target);
 
-        void onFailure();
+        void onImageSliderFailure();
     }
 
     /**
